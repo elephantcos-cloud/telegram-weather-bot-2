@@ -1,0 +1,30 @@
+name: Daily Weather & News
+
+on:
+  schedule:
+    - cron: '0 2 * * *'   # UTC 2:00 = Bangladesh 8:00 AM
+  workflow_dispatch:        # হাতে চালানোর জন্য
+
+jobs:
+  send-daily:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Send daily update
+        run: python bot.py schedule
+        env:
+          BOT_TOKEN:       ${{ secrets.BOT_TOKEN }}
+          CHAT_ID:         ${{ secrets.CHAT_ID }}
+          WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+          NEWS_API_KEY:    ${{ secrets.NEWS_API_KEY }}
+          CITY:            ${{ secrets.CITY }}

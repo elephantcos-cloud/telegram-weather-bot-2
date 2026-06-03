@@ -1,0 +1,45 @@
+name: Command Polling
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # প্রতি ৫ মিনিটে
+  workflow_dispatch:
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Restore offset cache
+        uses: actions/cache/restore@v4
+        with:
+          path: offset.txt
+          key: offset-${{ github.run_id }}
+          restore-keys: |
+            offset-
+
+      - name: Poll commands
+        run: python bot.py poll
+        env:
+          BOT_TOKEN:       ${{ secrets.BOT_TOKEN }}
+          CHAT_ID:         ${{ secrets.CHAT_ID }}
+          WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
+          NEWS_API_KEY:    ${{ secrets.NEWS_API_KEY }}
+          CITY:            ${{ secrets.CITY }}
+
+      - name: Save offset cache
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: offset.txt
+          key: offset-${{ github.run_id }}
