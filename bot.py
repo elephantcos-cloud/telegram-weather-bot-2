@@ -69,7 +69,7 @@ def get_weather():
 def get_news():
     url = (
         f"https://newsapi.org/v2/top-headlines"
-        f"?country=bd&apiKey={NEWS_KEY}&pageSize=5"
+        f"?country=us&apiKey={NEWS_KEY}&pageSize=5"
     )
     try:
         data = requests.get(url, timeout=10).json()
