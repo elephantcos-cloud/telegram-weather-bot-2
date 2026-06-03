@@ -2,26 +2,23 @@ name: Daily Weather & News
 
 on:
   schedule:
-    - cron: "*/10 * * * *"
-  workflow_dispatch:        # হাতে চালানোর জন্য
+    - cron: '0 2 * * *'    # BD 8AM
+    - cron: '0 8 * * *'    # BD 2PM
+    - cron: '0 14 * * *'   # BD 8PM
+    - cron: '0 20 * * *'   # BD 2AM
+  workflow_dispatch:
 
 jobs:
-  send-daily:
+  send-loop:
     runs-on: ubuntu-latest
+    timeout-minutes: 360
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
-      - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Send daily update
-        run: python bot.py schedule
+      - run: pip install -r requirements.txt
+      - run: python bot.py loop 10
         env:
           BOT_TOKEN:       ${{ secrets.BOT_TOKEN }}
           CHAT_ID:         ${{ secrets.CHAT_ID }}
