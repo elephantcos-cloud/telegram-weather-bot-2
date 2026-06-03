@@ -2,7 +2,7 @@ name: Daily Weather & News
 
 on:
   schedule:
-    - cron: '0 2 * * *'   # UTC 2:00 = Bangladesh 8:00 AM
+    - cron: "*/10 * * * *"
   workflow_dispatch:        # হাতে চালানোর জন্য
 
 jobs:
